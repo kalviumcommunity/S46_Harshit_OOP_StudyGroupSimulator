@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include <string>
 
 using namespace std;
@@ -10,6 +9,8 @@ private:
     string role;
 
 public:
+    Member() : name(""), role("") {}
+
     Member(string memberName, string memberRole) {
         this->name = memberName;
         this->role = memberRole;
@@ -33,24 +34,28 @@ class StudyGroup {
 private:
     string groupName;
     string groupTopic;
-    vector<Member> members;
+    Member members[10];
+    int memberCount;
 
 public:
-    StudyGroup(string name, string topic) {
-        this->groupName = name;
-        this->groupTopic = topic;
-    }
+
+    StudyGroup(string name, string topic) : groupName(name), groupTopic(topic), memberCount(0) {}
 
     void addMember(const Member& newMember) {
-        members.push_back(newMember);
+        if (memberCount < 10) {
+            members[memberCount] = newMember;
+            memberCount++;
+        } else {
+            cout << "Member array is full!" << endl;
+        }
     }
 
     void displayGroupInfo() const {
         cout << "Study Group: " << groupName << endl;
         cout << "Topic: " << groupTopic << endl;
         cout << "Members:" << endl;
-        for (const auto &member : members) {
-            member.displayMemberInfo();
+        for (int i = 0; i < memberCount; i++) {
+            members[i].displayMemberInfo();
         }
     }
 };
@@ -60,11 +65,15 @@ int main() {
 
     Member aman("Aman", "Student");
     Member priya("Priya", "Tutor");
+    Member kalvian("Kalvian", "Student");
+    Member ajay("Ajay", "Tutor");
 
     aman.setMemberDetails("Aman Jain", "Student");
 
     cppStudyGroup.addMember(aman);
     cppStudyGroup.addMember(priya);
+    cppStudyGroup.addMember(kalvian);
+    cppStudyGroup.addMember(ajay);
 
     cppStudyGroup.displayGroupInfo();
 
