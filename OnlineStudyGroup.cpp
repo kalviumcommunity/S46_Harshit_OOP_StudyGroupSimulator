@@ -10,13 +10,21 @@ private:
     string role;
 
 public:
-    Member(string memberName, string memberRole) : name(memberName), role(memberRole) {}
+    Member(string memberName, string memberRole) {
+        this->name = memberName;
+        this->role = memberRole;
+    }
 
-    void displayMemberInfo() {
+    void setMemberDetails(string memberName, string memberRole) {
+        this->name = memberName;
+        this->role = memberRole;
+    }
+
+    void displayMemberInfo() const {
         cout << "Name: " << name << ", Role: " << role << endl;
     }
 
-    string getRole() {
+    string getRole() const {
         return role;
     }
 };
@@ -28,17 +36,20 @@ private:
     vector<Member> members;
 
 public:
-    StudyGroup(string name, string topic) : groupName(name), groupTopic(topic) {}
+    StudyGroup(string name, string topic) {
+        this->groupName = name;
+        this->groupTopic = topic;
+    }
 
-    void addMember(Member newMember) {
+    void addMember(const Member& newMember) {
         members.push_back(newMember);
     }
 
-    void displayGroupInfo() {
+    void displayGroupInfo() const {
         cout << "Study Group: " << groupName << endl;
         cout << "Topic: " << groupTopic << endl;
         cout << "Members:" << endl;
-        for (auto &member : members) {
+        for (const auto &member : members) {
             member.displayMemberInfo();
         }
     }
@@ -47,10 +58,12 @@ public:
 int main() {
     StudyGroup cppStudyGroup("C++ Enthusiasts", "Advanced C++ Programming");
 
-    Member aaryan("Aaryan", "Student");
+    Member aman("Aman", "Student");
     Member priya("Priya", "Tutor");
 
-    cppStudyGroup.addMember(aaryan);
+    aman.setMemberDetails("Aman Jain", "Student");
+
+    cppStudyGroup.addMember(aman);
     cppStudyGroup.addMember(priya);
 
     cppStudyGroup.displayGroupInfo();
