@@ -34,14 +34,13 @@ class StudyGroup {
 private:
     string groupName;
     string groupTopic;
-    Member members[10];
+    Member* members[10];
     int memberCount;
 
 public:
-
     StudyGroup(string name, string topic) : groupName(name), groupTopic(topic), memberCount(0) {}
 
-    void addMember(const Member& newMember) {
+    void addMember(Member* newMember) {
         if (memberCount < 10) {
             members[memberCount] = newMember;
             memberCount++;
@@ -55,27 +54,32 @@ public:
         cout << "Topic: " << groupTopic << endl;
         cout << "Members:" << endl;
         for (int i = 0; i < memberCount; i++) {
-            members[i].displayMemberInfo();
+            members[i]->displayMemberInfo();
         }
     }
 };
 
 int main() {
-    StudyGroup cppStudyGroup("C++ Enthusiasts", "Advanced C++ Programming");
+    StudyGroup* cppStudyGroup = new StudyGroup("C++ Enthusiasts", "Advanced C++ Programming");
 
-    Member aman("Aman", "Student");
-    Member priya("Priya", "Tutor");
-    Member kalvian("Kalvian", "Student");
-    Member ajay("Ajay", "Tutor");
+    Member* aman = new Member("Aman Jain", "Student");
+    Member* priya = new Member("Priya", "Tutor");
+    Member* kalvian = new Member("Kalvian", "Student");
+    Member* ajay = new Member("Ajay", "Tutor");
 
-    aman.setMemberDetails("Aman Jain", "Student");
+    cppStudyGroup->addMember(aman);
+    cppStudyGroup->addMember(priya);
+    cppStudyGroup->addMember(kalvian);
+    cppStudyGroup->addMember(ajay);
 
-    cppStudyGroup.addMember(aman);
-    cppStudyGroup.addMember(priya);
-    cppStudyGroup.addMember(kalvian);
-    cppStudyGroup.addMember(ajay);
+    cppStudyGroup->displayGroupInfo();
 
-    cppStudyGroup.displayGroupInfo();
+    delete aman;
+    delete priya;
+    delete kalvian;
+    delete ajay;
+
+    delete cppStudyGroup;
 
     return 0;
 }
