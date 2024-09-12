@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -7,13 +8,19 @@ class Member {
 private:
     string name;
     string role;
+    static int totalMembers;
 
 public:
-    Member() : name(""), role("") {}
+    Member() : name(""), role("") {
+        totalMembers++;
+    }
 
-    Member(string memberName, string memberRole) {
-        this->name = memberName;
-        this->role = memberRole;
+    Member(string memberName, string memberRole) : name(memberName), role(memberRole) {
+        totalMembers++;
+    }
+
+    static int getTotalMembers() {
+        return totalMembers;
     }
 
     void setMemberDetails(string memberName, string memberRole) {
@@ -30,54 +37,66 @@ public:
     }
 };
 
+int Member::totalMembers = 0;
+
 class StudyGroup {
 private:
     string groupName;
     string groupTopic;
-    Member* members[10];
-    int memberCount;
-
+    vector<Member*> members;
+    static int totalGroups;
 public:
-    StudyGroup(string name, string topic) : groupName(name), groupTopic(topic), memberCount(0) {}
+    StudyGroup(string name, string topic) : groupName(name), groupTopic(topic) {
+        totalGroups++;
+    }
+
+    static int getTotalGroups() {
+        return totalGroups;
+    }
 
     void addMember(Member* newMember) {
-        if (memberCount < 10) {
-            members[memberCount] = newMember;
-            memberCount++;
-        } else {
-            cout << "Member array is full!" << endl;
-        }
+        members.push_back(newMember);
     }
 
     void displayGroupInfo() const {
         cout << "Study Group: " << groupName << endl;
         cout << "Topic: " << groupTopic << endl;
         cout << "Members:" << endl;
-        for (int i = 0; i < memberCount; i++) {
-            members[i]->displayMemberInfo();
+        for (const auto& member : members) {
+            member->displayMemberInfo();
+        }
+    }
+
+    void deleteMembers() {
+        for (auto& member : members) {
+            delete member;
         }
     }
 };
 
+int StudyGroup::totalGroups = 0;
+
 int main() {
     StudyGroup* cppStudyGroup = new StudyGroup("C++ Enthusiasts", "Advanced C++ Programming");
 
-    Member* aman = new Member("Aman Jain", "Student");
-    Member* priya = new Member("Priya", "Tutor");
-    Member* kalvian = new Member("Kalvian", "Student");
-    Member* ajay = new Member("Ajay", "Tutor");
+    vector<Member*> members;
+    string names[] = {"Aman Jain", "Priya", "Kalvian", "Ajay"};
+    string roles[] = {"Student", "Tutor", "Student", "Tutor"};
 
-    cppStudyGroup->addMember(aman);
-    cppStudyGroup->addMember(priya);
-    cppStudyGroup->addMember(kalvian);
-    cppStudyGroup->addMember(ajay);
+    for (int i = 0; i < 4; i++) {
+        Member* newMember = new Member(names[i], roles[i]);
+        members.push_back(newMember);
+        cppStudyGroup->addMember(newMember);
+    }
 
     cppStudyGroup->displayGroupInfo();
 
-    delete aman;
-    delete priya;
-    delete kalvian;
-    delete ajay;
+    cout << "Total members: " << Member::getTotalMembers() << endl;
+    cout << "Total study groups: " << StudyGroup::getTotalGroups() << endl;
+
+    for (auto member : members) {
+        delete member;
+    }
 
     delete cppStudyGroup;
 
