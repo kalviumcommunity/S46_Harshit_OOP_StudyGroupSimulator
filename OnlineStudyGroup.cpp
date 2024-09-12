@@ -11,6 +11,7 @@ private:
     static int totalMembers;
 
 public:
+
     Member() : name(""), role("") {
         totalMembers++;
     }
@@ -18,7 +19,8 @@ public:
     Member(string memberName, string memberRole) : name(memberName), role(memberRole) {
         totalMembers++;
     }
-
+    
+    // Static Member Functions
     static int getTotalMembers() {
         return totalMembers;
     }
@@ -45,11 +47,14 @@ private:
     string groupTopic;
     vector<Member*> members;
     static int totalGroups;
+
 public:
+
     StudyGroup(string name, string topic) : groupName(name), groupTopic(topic) {
         totalGroups++;
     }
 
+    // Static Member Functions
     static int getTotalGroups() {
         return totalGroups;
     }
