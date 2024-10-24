@@ -4,23 +4,24 @@
 
 using namespace std;
 
-// Base class
 class Member {
 private:
-    // Private data members (abstraction)
     string name;
     string role;
 
     static int totalMembers;
 
 public:
-    // Default constructor
     Member() : name(""), role("") {
         totalMembers++;
     }
 
-    // Parameterized constructor
     Member(string memberName, string memberRole) : name(memberName), role(memberRole) {
+        totalMembers++;
+    }
+
+    // Overloaded constructor to initialize only the member's name
+    Member(string memberName) : name(memberName), role("Unknown") {
         totalMembers++;
     }
 
@@ -39,14 +40,6 @@ public:
 
     string getRole() const {
         return this->role;
-    }
-
-    void setName(const string& memberName) {
-        this->name = memberName;
-    }
-
-    void setRole(const string& memberRole) {
-        this->role = memberRole;
     }
 
     void displayMemberInfo() const {
@@ -73,7 +66,6 @@ public:
 // Base class
 class StudyGroup {
 private:
-    // Private data members for group name and topic (abstraction)
     string groupName;
     string groupTopic;
 
@@ -82,7 +74,6 @@ private:
     static int totalGroups;
 
 public:
-    // Parameterized constructor
     StudyGroup(string name, string topic) : groupName(name), groupTopic(topic) {
         totalGroups++;
     }
@@ -121,7 +112,7 @@ public:
     }
 
     ~StudyGroup() {
-        // Destructor to clean up dynamically allocated members
+
         for (auto member : members) {
             delete member;
         }
@@ -135,7 +126,6 @@ class OnlineStudyGroup : public StudyGroup {
 public:
     OnlineStudyGroup(string name, string topic) : StudyGroup(name, topic) {}
 
-    // functionality to start an online session
     void startSession() const {
         cout << "Starting an online session for group: " << getGroupName() << endl;
         cout << "Topic: " << getGroupTopic() << endl;
@@ -145,24 +135,24 @@ public:
 
 int main() {
     OnlineStudyGroup* cppStudyGroup = new OnlineStudyGroup("C++ Enthusiasts", "Advanced C++ Programming");
-
+    
+    // Use constructor overloading to create members with different initialization
     vector<Member*> members;
-    string names[] = {"Aman Jain", "Priya", "Kalvian", "Ajay"};
-    string roles[] = {"Student", "Tutor", "Student", "Tutor"};
+    members.push_back(new Member("Aman Jain", "Student")); // Using parameterized constructor
+    members.push_back(new Member("Priya")); // Using overloaded constructor, role set to "Unknown"
+    members.push_back(new Tutor("Kalvian")); // Using Tutor constructor
+    members.push_back(new Member("Ajay", "Tutor")); // Using parameterized constructor
 
-    for (int i = 0; i < 4; i++) {
-        Member* newMember = new Member(names[i], roles[i]);
-        members.push_back(newMember);
+    for (Member* newMember : members) {
         cppStudyGroup->addMember(newMember);
     }
 
-    cppStudyGroup->displayGroupInfo();
-    cppStudyGroup->startSession(); // Start the online session
+    cppStudyGroup->displayGroupInfo(); 
+    cppStudyGroup->startSession();
 
-    cout << "Total members: " << Member::getTotalMembers() << endl;
-    cout << "Total study groups: " << StudyGroup::getTotalGroups() << endl;
+    cout << "Total members: " << Member::getTotalMembers() << endl; 
+    cout << "Total study groups: " << StudyGroup::getTotalGroups() << endl; 
 
-    //clean up
     delete cppStudyGroup;
 
     return 0;
