@@ -6,8 +6,10 @@ using namespace std;
 
 class Member {
 private:
+    // Private data members (abstraction)
     string name;
     string role;
+
     static int totalMembers;
 
 public:
@@ -24,34 +26,30 @@ public:
         return totalMembers;
     }
 
-    // Mutator to set member details
     void setMemberDetails(string memberName, string memberRole) {
         this->name = memberName;
         this->role = memberRole;
     }
 
-    // Accessor for member name
     string getName() const {
-        return name;
+        return this->name;
     }
 
-    // Accessorfor member role
     string getRole() const {
-        return role;
+        return this->role;
     }
 
-    // Mutator for member name
     void setName(const string& memberName) {
-        name = memberName;
+        this->name = memberName;
     }
 
-    // Mutator for member role
     void setRole(const string& memberRole) {
-        role = memberRole;
+        this->role = memberRole;
     }
 
+    // Function to display member info (demonstrates abstraction as only relevant information is exposed)
     void displayMemberInfo() const {
-        cout << "Name: " << name << ", Role: " << role << endl;
+        cout << "Name: " << this->name << ", Role: " << this->role << endl;
     }
 };
 
@@ -59,13 +57,16 @@ int Member::totalMembers = 0;
 
 class StudyGroup {
 private:
+    // Private data members for group name and topic (abstraction)
     string groupName;
     string groupTopic;
+
+    // A list of pointers to members, hidden from external access
     vector<Member*> members;
+
     static int totalGroups;
 
 public:
-
     StudyGroup(string name, string topic) : groupName(name), groupTopic(topic) {
         totalGroups++;
     }
@@ -74,33 +75,30 @@ public:
         return totalGroups;
     }
 
-    // Mutator for group name
     void setGroupName(const string& name) {
-        groupName = name;
+        this->groupName = name;
     }
 
-    // Accessor for group name
     string getGroupName() const {
-        return groupName;
+        return this->groupName;
     }
 
-    // Mutator for group topic
     void setGroupTopic(const string& topic) {
-        groupTopic = topic;
+        this->groupTopic = topic;
     }
 
-    // Accessor for group topic
     string getGroupTopic() const {
-        return groupTopic;
+        return this->groupTopic;
     }
 
     void addMember(Member* newMember) {
-        members.push_back(newMember);
+        this->members.push_back(newMember);
     }
 
+    // Function to display group info (abstraction as only necessary info is exposed)
     void displayGroupInfo() const {
-        cout << "Study Group: " << groupName << endl;
-        cout << "Topic: " << groupTopic << endl;
+        cout << "Study Group: " << this->groupName << endl;
+        cout << "Topic: " << this->groupTopic << endl;
         cout << "Members:" << endl;
         for (const auto& member : members) {
             member->displayMemberInfo();
@@ -108,7 +106,7 @@ public:
     }
 
     void deleteMembers() {
-        for (auto& member : members) {
+        for (auto& member : this->members) {  
             delete member;
         }
     }
@@ -137,6 +135,7 @@ int main() {
     for (auto member : members) {
         delete member;
     }
+
     delete cppStudyGroup;
 
     return 0;
