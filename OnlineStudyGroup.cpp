@@ -14,10 +14,12 @@ private:
 
 public:
 
+    // Default constructor
     Member() : name(""), role("") {
         totalMembers++;
     }
 
+    // Parameterized constructor
     Member(string memberName, string memberRole) : name(memberName), role(memberRole) {
         totalMembers++;
     }
@@ -67,6 +69,8 @@ private:
     static int totalGroups;
 
 public:
+
+    // Parameterized constructor
     StudyGroup(string name, string topic) : groupName(name), groupTopic(topic) {
         totalGroups++;
     }
@@ -105,8 +109,9 @@ public:
         }
     }
 
-    void deleteMembers() {
-        for (auto& member : this->members) {  
+    ~StudyGroup() {
+        // Destructor to clean up dynamically allocated members
+        for (auto member : members) {
             delete member;
         }
     }
@@ -131,10 +136,6 @@ int main() {
 
     cout << "Total members: " << Member::getTotalMembers() << endl;
     cout << "Total study groups: " << StudyGroup::getTotalGroups() << endl;
-
-    for (auto member : members) {
-        delete member;
-    }
 
     delete cppStudyGroup;
 
