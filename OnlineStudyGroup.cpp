@@ -19,23 +19,39 @@ public:
     Member(string memberName, string memberRole) : name(memberName), role(memberRole) {
         totalMembers++;
     }
-    
-    // Static Member Functions
+
     static int getTotalMembers() {
         return totalMembers;
     }
 
+    // Mutator to set member details
     void setMemberDetails(string memberName, string memberRole) {
         this->name = memberName;
         this->role = memberRole;
     }
 
-    void displayMemberInfo() const {
-        cout << "Name: " << name << ", Role: " << role << endl;
+    // Accessor for member name
+    string getName() const {
+        return name;
     }
 
+    // Accessorfor member role
     string getRole() const {
         return role;
+    }
+
+    // Mutator for member name
+    void setName(const string& memberName) {
+        name = memberName;
+    }
+
+    // Mutator for member role
+    void setRole(const string& memberRole) {
+        role = memberRole;
+    }
+
+    void displayMemberInfo() const {
+        cout << "Name: " << name << ", Role: " << role << endl;
     }
 };
 
@@ -54,9 +70,28 @@ public:
         totalGroups++;
     }
 
-    // Static Member Functions
     static int getTotalGroups() {
         return totalGroups;
+    }
+
+    // Mutator for group name
+    void setGroupName(const string& name) {
+        groupName = name;
+    }
+
+    // Accessor for group name
+    string getGroupName() const {
+        return groupName;
+    }
+
+    // Mutator for group topic
+    void setGroupTopic(const string& topic) {
+        groupTopic = topic;
+    }
+
+    // Accessor for group topic
+    string getGroupTopic() const {
+        return groupTopic;
     }
 
     void addMember(Member* newMember) {
@@ -102,7 +137,6 @@ int main() {
     for (auto member : members) {
         delete member;
     }
-
     delete cppStudyGroup;
 
     return 0;
