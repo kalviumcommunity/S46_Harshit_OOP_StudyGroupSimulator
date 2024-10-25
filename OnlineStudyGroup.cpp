@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// Abstract base class
 class Member {
 private:
     string name;
@@ -20,9 +21,13 @@ public:
         totalMembers++;
     }
 
-    // Overloaded constructor to initialize only the member's name
     Member(string memberName) : name(memberName), role("Unknown") {
         totalMembers++;
+    }
+
+    virtual ~Member() {
+        // Virtual destructor to cleanup derived classes
+        totalMembers--;
     }
 
     static int getTotalMembers() {
@@ -42,9 +47,12 @@ public:
         return this->role;
     }
 
-    void displayMemberInfo() const {
+    virtual void displayMemberInfo() const {
         cout << "Name: " << this->name << ", Role: " << this->role << endl;
     }
+
+    // Pure virtual function (abstract method)
+    virtual string getDescription() const = 0; // Makes Member an abstract class
 };
 
 int Member::totalMembers = 0;
@@ -52,15 +60,23 @@ int Member::totalMembers = 0;
 // Derived class for Students
 class Student : public Member {
 public:
-    // Constructor for Student
     Student(string name) : Member(name, "Student") {}
+
+    // Override pure virtual function
+    string getDescription() const override {
+        return "I am a student and I love to learn!";
+    }
 };
 
 // Derived class for Tutors
 class Tutor : public Member {
 public:
-    // Constructor for Tutor
     Tutor(string name) : Member(name, "Tutor") {}
+
+    // Override pure virtual function
+    string getDescription() const override {
+        return "I am a tutor and I love to teach!";
+    }
 };
 
 // Base class
@@ -108,14 +124,15 @@ public:
         cout << "Members:" << endl;
         for (const auto& member : members) {
             member->displayMemberInfo();
+            cout << "Description: " << member->getDescription() << endl; // Call virtual function
         }
     }
 
     ~StudyGroup() {
-
         for (auto member : members) {
             delete member;
         }
+        totalGroups--;
     }
 };
 
@@ -136,13 +153,11 @@ public:
 int main() {
     OnlineStudyGroup* cppStudyGroup = new OnlineStudyGroup("C++ Enthusiasts", "Advanced C++ Programming");
     
-    // Use constructor overloading to create members with different initialization
     vector<Member*> members;
-    members.push_back(new Member("Aman Jain", "Student")); // Using parameterized constructor
-    members.push_back(new Member("Priya")); // Using overloaded constructor, role set to "Unknown"
-    members.push_back(new Tutor("Kalvian")); // Using Tutor constructor
-    members.push_back(new Member("Ajay", "Tutor")); // Using parameterized constructor
-
+    members.push_back(new Student("Aman Jain"));   
+    members.push_back(new Tutor("Priya"));         
+    members.push_back(new Student("Kalvian"));    
+    members.push_back(new Tutor("Ajay"));        
     for (Member* newMember : members) {
         cppStudyGroup->addMember(newMember);
     }
