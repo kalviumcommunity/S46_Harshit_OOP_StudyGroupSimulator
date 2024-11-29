@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -12,7 +13,6 @@ private:
 
 public:
     Member(string memberName, string memberRole) : name(memberName), role(memberRole) {}
-
     virtual ~Member() = default;
 
     string getName() const { return name; }
@@ -22,11 +22,14 @@ public:
         cout << "Name: " << name << ", Role: " << role << endl;
     }
 
-    // Pure virtual function
+    // Pure virtual function for description
     virtual string getDescription() const = 0;
+
+    // Hook for additional behavior
+    virtual void additionalBehavior() const {}
 };
 
-// Student class
+// Concrete Member: Student
 class Student : public Member {
 public:
     Student(string name) : Member(name, "Student") {}
@@ -36,7 +39,7 @@ public:
     }
 };
 
-// Tutor class
+// Concrete Member: Tutor
 class Tutor : public Member {
 public:
     Tutor(string name) : Member(name, "Tutor") {}
@@ -46,19 +49,13 @@ public:
     }
 };
 
-// Class to manage Study Group Members
+// MemberManager: Open for extension through polymorphism
 class MemberManager {
 private:
-    vector<Member*> members;
+    vector<shared_ptr<Member>> members;
 
 public:
-    ~MemberManager() {
-        for (auto member : members) {
-            delete member;
-        }
-    }
-
-    void addMember(Member* newMember) {
+    void addMember(shared_ptr<Member> newMember) {
         members.push_back(newMember);
     }
 
@@ -66,11 +63,12 @@ public:
         for (const auto& member : members) {
             member->displayMemberInfo();
             cout << "Description: " << member->getDescription() << endl;
+            member->additionalBehavior(); // Dynamic behavior hook
         }
     }
 };
 
-// StudyGroup class
+// StudyGroup: Open for extension via derived classes
 class StudyGroup {
 private:
     string groupName;
@@ -80,11 +78,13 @@ private:
 public:
     StudyGroup(string name, string topic) : groupName(name), groupTopic(topic) {}
 
-    void addMember(Member* newMember) {
+    virtual ~StudyGroup() = default;
+
+    void addMember(shared_ptr<Member> newMember) {
         memberManager.addMember(newMember);
     }
 
-    void displayGroupInfo() const {
+    virtual void displayGroupInfo() const {
         cout << "Study Group: " << groupName << endl;
         cout << "Topic: " << groupTopic << endl;
         cout << "Members:" << endl;
@@ -92,28 +92,48 @@ public:
     }
 };
 
-// OnlineStudyGroup class for conducting sessions
+// OnlineStudyGroup: Extended behavior without modifying StudyGroup
 class OnlineStudyGroup : public StudyGroup {
 public:
     OnlineStudyGroup(string name, string topic) : StudyGroup(name, topic) {}
 
     void startSession() const {
-        cout << "Starting an online session for group: " << endl;
+        cout << "Starting an online session for the group!" << endl;
+    }
+
+    void displayGroupInfo() const override {
+        StudyGroup::displayGroupInfo();
+        cout << "This group is conducted online!" << endl;
+    }
+};
+
+// New Member Type: Guest
+class Guest : public Member {
+public:
+    Guest(string name) : Member(name, "Guest") {}
+
+    string getDescription() const override {
+        return "I am a guest, observing the session!";
+    }
+
+    void additionalBehavior() const override {
+        cout << "Note: Guest has limited access to materials." << endl;
     }
 };
 
 int main() {
-    OnlineStudyGroup* cppStudyGroup = new OnlineStudyGroup("C++ Enthusiasts", "Advanced C++ Programming");
+    // Creating an online study group
+    shared_ptr<OnlineStudyGroup> cppStudyGroup = make_shared<OnlineStudyGroup>("C++ Enthusiasts", "Advanced C++ Programming");
 
-    cppStudyGroup->addMember(new Student("Aman Jain"));
-    cppStudyGroup->addMember(new Tutor("Priya"));
-    cppStudyGroup->addMember(new Student("Kalvian"));
-    cppStudyGroup->addMember(new Tutor("Ajay"));
+    // Adding members
+    cppStudyGroup->addMember(make_shared<Student>("Aman Jain"));
+    cppStudyGroup->addMember(make_shared<Tutor>("Priya"));
+    cppStudyGroup->addMember(make_shared<Student>("Kalvian"));
+    cppStudyGroup->addMember(make_shared<Guest>("Observer"));
 
+    // Display group info and start session
     cppStudyGroup->displayGroupInfo();
     cppStudyGroup->startSession();
-
-    delete cppStudyGroup;
 
     return 0;
 }
