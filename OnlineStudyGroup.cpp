@@ -22,10 +22,10 @@ public:
         cout << "Name: " << name << ", Role: " << role << endl;
     }
 
-    // Pure virtual function for description
+    // Pure virtual function for description (LSP: Derived classes must implement this behavior)
     virtual string getDescription() const = 0;
 
-    // Hook for additional behavior
+    // Hook for additional behavior (LSP: Allows derived classes to add specific behavior)
     virtual void additionalBehavior() const {}
 };
 
@@ -34,6 +34,7 @@ class Student : public Member {
 public:
     Student(string name) : Member(name, "Student") {}
 
+    // LSP: Implements base class interface without altering expected behavior
     string getDescription() const override {
         return "I am a student and I love to learn!";
     }
@@ -44,6 +45,7 @@ class Tutor : public Member {
 public:
     Tutor(string name) : Member(name, "Tutor") {}
 
+    // LSP: Implements base class interface without altering expected behavior
     string getDescription() const override {
         return "I am a tutor and I love to teach!";
     }
@@ -61,9 +63,10 @@ public:
 
     void displayMembers() const {
         for (const auto& member : members) {
+            // LSP: Polymorphic call to base class methods ensures substitutability
             member->displayMemberInfo();
             cout << "Description: " << member->getDescription() << endl;
-            member->additionalBehavior(); // Dynamic behavior hook
+            member->additionalBehavior(); // LSP: Derived class behavior is used seamlessly
         }
     }
 };
@@ -81,6 +84,7 @@ public:
     virtual ~StudyGroup() = default;
 
     void addMember(shared_ptr<Member> newMember) {
+        // LSP: Members of any derived type can be added, fulfilling substitutability
         memberManager.addMember(newMember);
     }
 
@@ -88,6 +92,7 @@ public:
         cout << "Study Group: " << groupName << endl;
         cout << "Topic: " << groupTopic << endl;
         cout << "Members:" << endl;
+        // LSP: Polymorphic behavior ensures consistency when displaying members
         memberManager.displayMembers();
     }
 };
@@ -102,6 +107,7 @@ public:
     }
 
     void displayGroupInfo() const override {
+        // LSP: Base class behavior extended without altering substitutability
         StudyGroup::displayGroupInfo();
         cout << "This group is conducted online!" << endl;
     }
@@ -112,6 +118,7 @@ class Guest : public Member {
 public:
     Guest(string name) : Member(name, "Guest") {}
 
+    // LSP: Implements base class interface while adding specific behavior
     string getDescription() const override {
         return "I am a guest, observing the session!";
     }
@@ -125,13 +132,13 @@ int main() {
     // Creating an online study group
     shared_ptr<OnlineStudyGroup> cppStudyGroup = make_shared<OnlineStudyGroup>("C++ Enthusiasts", "Advanced C++ Programming");
 
-    // Adding members
+    // Adding members (LSP: Members of any derived type can be added)
     cppStudyGroup->addMember(make_shared<Student>("Aman Jain"));
     cppStudyGroup->addMember(make_shared<Tutor>("Priya"));
     cppStudyGroup->addMember(make_shared<Student>("Kalvian"));
     cppStudyGroup->addMember(make_shared<Guest>("Observer"));
 
-    // Display group info and start session
+    // Display group info and start session (LSP: Polymorphic behavior used seamlessly)
     cppStudyGroup->displayGroupInfo();
     cppStudyGroup->startSession();
 
